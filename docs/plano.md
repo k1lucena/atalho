@@ -253,7 +253,7 @@ As estimativas estão entre parênteses. **DoD** é o critério de pronto. Toda 
 |---|---|---|---|
 | 1 | **Onde fazer o deploy** | VPS com o mesmo compose (Hetzner CAX11/CX22, ~4–5 €/mês, 4 GB de RAM; Oracle Free ARM é grátis, mas a capacidade é instável). Um PaaS com 8 serviços sai caro ou esbarra nos limites do free tier | Até o fim da semana 3 |
 | 2 | Domínio | Um domínio curto e barato (`.xyz`/`.dev`) mostra o produto melhor. Para gastar zero, `sslip.io`/DuckDNS | Semana 4 |
-| 3 | Versão do Spring Boot | **4.0.x** (a linha 3.x saiu do suporte OSS; confira em spring.io/projects/spring-boot#support). Antes, verifique se springdoc 3.x, Bucket4j e Testcontainers 2.x são compatíveis | Semana 1, tarefa 1.2 |
+| 3 | Versão do Spring Boot | ✅ **Decidido: 4.2.0**, com springdoc 3.2.1 (compilado contra a 4.2.0) e Testcontainers 2.0.5 (via BOM do Boot). Bucket4j ainda precisa ser conferido na semana 4 | Resolvido na tarefa 1.2 |
 | 4 | 301 ou 302 | **302**: o navegador guarda o 301 em cache e os cliques seguintes não chegam ao servidor | Já recomendado |
 | 5 | Diferenciar maiúsculas no código | Códigos gerados diferenciam maiúsculas (base62). Aliases passam para minúsculas e o índice é `UNIQUE(lower(code))`, para evitar `Promo` e `promo` apontando para lugares diferentes | Semana 2 |
 | 6 | Garantia de entrega do clique | Publicação assíncrona com *publisher confirms* e métrica de falha. Aceita-se perder cliques se a api cair. O Outbox fica como evolução documentada nos trade-offs | Semana 3 |
