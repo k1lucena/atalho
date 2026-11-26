@@ -1,0 +1,53 @@
+name: atalho
+
+# Local infrastructure. Every credential has a development default, so
+# `docker compose up` works without a .env file; see .env.example to override.
+# The api, worker, web, gateway and observability services join this file in later tasks.
+
+services:
+  postgres:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-atalho}
+      POSTGRES_USER: ${POSTGRES_USER:-atalho}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-atalho}
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "${REDIS_PORT:-6379}:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  rabbitmq:
+    image: rabbitmq:4-management-alpine
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER:-atalho}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD:-atalho}
+    ports:
+      - "${RABBITMQ_PORT:-5672}:5672"     # AMQP
+      - "${RABBITMQ_UI_PORT:-15672}:15672" # management UI
+      - "15692:15692"                      # Prometheus metrics
+    volumes:
+      - ./infra/rabbitmq/enabled_plugins:/etc/rabbitmq/enabled_plugins:ro
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
+
+volumes:
+  pgdata:
