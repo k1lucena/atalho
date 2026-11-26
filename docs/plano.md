@@ -81,8 +81,11 @@ Access token JWT curto (15 min), guardado em memória no front. Refresh token op
 ### Postgres (migrations Flyway)
 
 ```sql
-users           (id BIGINT IDENTITY PK, email CITEXT UNIQUE NOT NULL, password_hash TEXT NOT NULL,
+users           (id BIGINT IDENTITY PK, email VARCHAR(320) UNIQUE NOT NULL, password_hash TEXT NOT NULL,
                  role VARCHAR(16) NOT NULL DEFAULT 'USER', created_at TIMESTAMPTZ NOT NULL)
+  CHECK (email = lower(btrim(email)))   -- a aplicação normaliza o e-mail; o banco garante.
+                                        -- (citext foi descartado: com parâmetros enviados como varchar
+                                        --  a comparação vira case-sensitive sem avisar)
 
 refresh_tokens  (id UUID PK, user_id BIGINT FK→users ON DELETE CASCADE, token_hash TEXT UNIQUE NOT NULL,
                  expires_at TIMESTAMPTZ NOT NULL, revoked_at TIMESTAMPTZ NULL, created_at TIMESTAMPTZ NOT NULL)

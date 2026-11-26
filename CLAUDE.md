@@ -17,7 +17,10 @@ grava os cliques no Postgres. Projeto de portfólio com foco em back-end Java.
 
 ## Comandos
 - Subir tudo: `docker compose up -d --build` → http://localhost (Grafana: http://localhost:3001)
+- Só a infraestrutura: `docker compose up -d` (Postgres, Redis, RabbitMQ). A api precisa dela para rodar localmente:
+  `cd backend && ./mvnw -pl atalho-api spring-boot:run`
 - Testes do back: `cd backend && ./mvnw verify` (precisa do Docker rodando, por causa do Testcontainers)
+- Só testes unitários (sem Docker): `./mvnw verify -DskipITs`
 - Um teste: `./mvnw -pl atalho-api verify -Dit.test=RedirectIT`
 - Front: `cd frontend && npm run lint && npm run typecheck && npm run build`
 - Carga: `docker compose --profile load run --rm k6 run /scripts/redirect-hot.js`
